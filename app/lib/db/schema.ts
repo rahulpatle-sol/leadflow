@@ -20,10 +20,27 @@ export type LeadStatus = (typeof LEAD_STATUSES)[number];
 
 export const leadStatusEnum = pgEnum("lead_status", LEAD_STATUSES);
 
+export const users = pgTable(
+  "users",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    passwordHash: text("password_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("users_email_idx").on(t.email)]
+);
+
 export const leads = pgTable(
   "leads",
   {
     id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     company: text("company"),
     phone: text("phone"),
@@ -33,7 +50,10 @@ export const leads = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (t) => [index("leads_next_follow_up_idx").on(t.nextFollowUpAt)]
+  (t) => [
+    index("leads_user_idx").on(t.userId),
+    index("leads_next_follow_up_idx").on(t.nextFollowUpAt),
+  ]
 );
 
 export const discussions = pgTable(
@@ -54,6 +74,8 @@ export const discussions = pgTable(
   ]
 );
 
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
 export type Discussion = typeof discussions.$inferSelect;

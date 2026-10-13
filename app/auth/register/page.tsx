@@ -2,21 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { TrendingUp } from "lucide-react";
 import { Scene } from "../../components/landing/scene";
 import { ThemeToggle } from "../../components/theme-toggle";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [done, setDone] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setDone("");
     if (name.trim().length < 2) {
       setError("Apna naam likho.");
       return;
@@ -29,8 +30,29 @@ export default function RegisterPage() {
       setError("Password kam se kam 6 characters ka ho.");
       return;
     }
-    // UI-only: backend baad me connect hoga
-    setDone("Demo only — backend abhi connect nahi hai.");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          password,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data?.error ?? "Register failed. Phir try karo.");
+        return;
+      }
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Network error. Phir try karo.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -99,17 +121,13 @@ export default function RegisterPage() {
                 {error}
               </p>
             ) : null}
-            {done ? (
-              <p role="status" className="text-sm text-accent">
-                {done}
-              </p>
-            ) : null}
 
             <button
               type="submit"
-              className="mt-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-bg transition-opacity hover:opacity-90"
+              disabled={loading}
+              className="mt-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-bg transition-opacity hover:opacity-90 disabled:opacity-60"
             >
-              Create account
+              {loading ? "Creating…" : "Create account"}
             </button>
           </form>
 
