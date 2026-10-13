@@ -41,7 +41,7 @@ export function serializeLead(
 export async function GET(request: Request) {
   const userId = await getSessionUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Sign in karo." }, { status: 401 });
+    return NextResponse.json({ error: "Please sign in to continue." }, { status: 401 });
   }
 
   const url = new URL(request.url);
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
   let status: LeadStatus | undefined;
   if (statusParam) {
     if (!(LEAD_STATUSES as readonly string[]).includes(statusParam)) {
-      return NextResponse.json({ error: "Galat status filter." }, { status: 400 });
+      return NextResponse.json({ error: "Invalid status filter." }, { status: 400 });
     }
     status = statusParam as LeadStatus;
   }
@@ -137,14 +137,14 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const userId = await getSessionUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Sign in karo." }, { status: 401 });
+    return NextResponse.json({ error: "Please sign in to continue." }, { status: 401 });
   }
 
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Valid JSON bhejo." }, { status: 400 });
+    return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
 
   const parsed = createLeadSchema.safeParse(body);
@@ -161,7 +161,7 @@ export async function POST(request: Request) {
     const d = new Date(rawFollowUp);
     if (Number.isNaN(d.getTime())) {
       return NextResponse.json(
-        { error: "Follow-up date sahi nahi hai." },
+        { error: "The follow-up date is invalid." },
         { status: 400 }
       );
     }
@@ -191,7 +191,7 @@ export async function POST(request: Request) {
     .returning();
   const lead = rows[0];
   if (!lead) {
-    return NextResponse.json({ error: "Lead nahi bana." }, { status: 500 });
+    return NextResponse.json({ error: "Could not create the lead." }, { status: 500 });
   }
 
   return NextResponse.json({ lead: serializeLead(lead) }, { status: 201 });

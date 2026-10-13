@@ -32,7 +32,7 @@ export function AddLeadDialog() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (name.trim().length < 2) {
-      toast.error("Lead ka naam likho.");
+      toast.error("Please enter the lead's name.");
       return;
     }
     setSaving(true);
@@ -44,7 +44,7 @@ export function AddLeadDialog() {
         status,
         nextFollowUpAt: date ? new Date(date).toISOString() : null,
       });
-      toast.success("Lead add ho gaya.");
+      toast.success("Lead added successfully.");
       reset();
       setOpen(false);
       await Promise.all([
@@ -52,7 +52,7 @@ export function AddLeadDialog() {
         queryClient.invalidateQueries({ queryKey: ["dashboard", "summary"] }),
       ]);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Lead nahi bana.");
+      toast.error(err instanceof Error ? err.message : "Could not create the lead.");
     } finally {
       setSaving(false);
     }

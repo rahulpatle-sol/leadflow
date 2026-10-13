@@ -28,13 +28,13 @@ async function getOwnedLead(userId: string, id: string) {
 }
 
 const notFound = () =>
-  NextResponse.json({ error: "Lead nahi mila." }, { status: 404 });
+  NextResponse.json({ error: "Lead not found." }, { status: 404 });
 
 // GET /api/leads/[id] -> { lead, discussions } (newest first)
 export async function GET(_request: Request, { params }: Ctx) {
   const userId = await getSessionUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Sign in karo." }, { status: 401 });
+    return NextResponse.json({ error: "Please sign in to continue." }, { status: 401 });
   }
   const { id } = await params;
 
@@ -69,7 +69,7 @@ export async function GET(_request: Request, { params }: Ctx) {
 export async function PATCH(request: Request, { params }: Ctx) {
   const userId = await getSessionUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Sign in karo." }, { status: 401 });
+    return NextResponse.json({ error: "Please sign in to continue." }, { status: 401 });
   }
   const { id } = await params;
 
@@ -77,7 +77,7 @@ export async function PATCH(request: Request, { params }: Ctx) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Valid JSON bhejo." }, { status: 400 });
+    return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
 
   const parsed = updateLeadSchema.safeParse(body);
@@ -96,7 +96,7 @@ export async function PATCH(request: Request, { params }: Ctx) {
     input.nextFollowUpAt == null
   ) {
     return NextResponse.json(
-      { error: "Update karne ke liye kuch bhejo." },
+      { error: "Provide at least one field to update." },
       { status: 400 }
     );
   }
@@ -110,7 +110,7 @@ export async function PATCH(request: Request, { params }: Ctx) {
       const d = new Date(raw);
       if (Number.isNaN(d.getTime())) {
         return NextResponse.json(
-          { error: "Follow-up date sahi nahi hai." },
+          { error: "The follow-up date is invalid." },
           { status: 400 }
         );
       }
@@ -149,7 +149,7 @@ export async function PATCH(request: Request, { params }: Ctx) {
     .returning();
   const updated = rows[0];
   if (!updated) {
-    return NextResponse.json({ error: "Lead update nahi hua." }, { status: 500 });
+    return NextResponse.json({ error: "Could not update the lead." }, { status: 500 });
   }
   return NextResponse.json({ lead: serializeLead(updated) });
 }

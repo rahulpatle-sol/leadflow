@@ -9,13 +9,13 @@ import { serializeLead } from "../../route";
 type Ctx = { params: Promise<{ id: string }> };
 
 const notFound = () =>
-  NextResponse.json({ error: "Lead nahi mila." }, { status: 404 });
+  NextResponse.json({ error: "Lead not found." }, { status: 404 });
 
 // GET /api/leads/[id]/discussions -> { discussions } (newest first)
 export async function GET(_request: Request, { params }: Ctx) {
   const userId = await getSessionUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Sign in karo." }, { status: 401 });
+    return NextResponse.json({ error: "Please sign in to continue." }, { status: 401 });
   }
   const { id } = await params;
 
@@ -57,7 +57,7 @@ export async function GET(_request: Request, { params }: Ctx) {
 export async function POST(request: Request, { params }: Ctx) {
   const userId = await getSessionUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Sign in karo." }, { status: 401 });
+    return NextResponse.json({ error: "Please sign in to continue." }, { status: 401 });
   }
   const { id } = await params;
 
@@ -65,7 +65,7 @@ export async function POST(request: Request, { params }: Ctx) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Valid JSON bhejo." }, { status: 400 });
+    return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
 
   const parsed = createDiscussionSchema.safeParse(body);
@@ -82,7 +82,7 @@ export async function POST(request: Request, { params }: Ctx) {
     const d = new Date(rawFollowUp);
     if (Number.isNaN(d.getTime())) {
       return NextResponse.json(
-        { error: "Follow-up date sahi nahi hai." },
+        { error: "The follow-up date is invalid." },
         { status: 400 }
       );
     }
@@ -112,7 +112,7 @@ export async function POST(request: Request, { params }: Ctx) {
     .returning();
   const discussion = inserted[0];
   if (!discussion) {
-    return NextResponse.json({ error: "Note save nahi hua." }, { status: 500 });
+    return NextResponse.json({ error: "Could not save the note." }, { status: 500 });
   }
 
   let leadRow = (

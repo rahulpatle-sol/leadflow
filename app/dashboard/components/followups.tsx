@@ -59,7 +59,7 @@ export function Followups({
   if (isError || !data) {
     return (
       <p className="rounded-2xl border border-danger/30 bg-surface p-4 text-sm text-danger">
-        Follow-ups load nahi hue.
+        Could not load follow-ups.
       </p>
     );
   }
@@ -82,7 +82,7 @@ export function Followups({
         </div>
         {data.dueToday.length === 0 ? (
           <p className="mt-3 text-sm text-muted">
-            Aaj koi follow-up due nahi hai. Calm day.
+            No follow-ups due today. All clear.
           </p>
         ) : (
           <ul className="mt-4 flex flex-col gap-2">
@@ -108,7 +108,7 @@ export function Followups({
         </div>
         {data.overdue.length === 0 ? (
           <p className="mt-3 text-sm text-muted">
-            Kuch overdue nahi hai. Badhiya.
+            Nothing is overdue. Nice work.
           </p>
         ) : (
           <ul className="mt-4 flex flex-col gap-2">

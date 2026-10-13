@@ -27,7 +27,7 @@ export function StatCards() {
   if (isError || !data) {
     return (
       <p className="rounded-2xl border border-danger/30 bg-surface p-4 text-sm text-danger">
-        Stats load nahi hue. Page refresh karo.
+        Could not load statistics. Please refresh the page.
       </p>
     );
   }

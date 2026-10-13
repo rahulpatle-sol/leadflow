@@ -30,11 +30,10 @@ export function ActivityFeed() {
           ))}
         </div>
       ) : isError || !data ? (
-        <p className="mt-4 text-sm text-danger">Activity load nahi hui.</p>
+        <p className="mt-4 text-sm text-danger">Could not load recent activity.</p>
       ) : data.recentActivity.length === 0 ? (
         <p className="mt-4 text-sm text-muted">
-          Abhi koi discussion nahi hai. Lead pe note add karte hi yahan
-          dikhega.
+          No discussions yet. Notes you add to a lead will appear here.
         </p>
       ) : (
         <ul className="mt-4 flex flex-col gap-3">

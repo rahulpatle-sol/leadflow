@@ -17,7 +17,7 @@ import { serializeLead } from "../../leads/route";
 export async function GET() {
   const userId = await getSessionUserId();
   if (!userId) {
-    return NextResponse.json({ error: "Sign in karo." }, { status: 401 });
+    return NextResponse.json({ error: "Please sign in to continue." }, { status: 401 });
   }
 
   let db;

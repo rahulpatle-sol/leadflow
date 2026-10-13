@@ -13,7 +13,7 @@ async function asJson(res: Response) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(
-      (data as { error?: string })?.error ?? "Kuch galat ho gaya."
+      (data as { error?: string })?.error ?? "Something went wrong. Please try again."
     );
   }
   return data;

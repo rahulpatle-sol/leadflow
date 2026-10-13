@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Valid JSON bhejo." }, { status: 400 });
+    return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
 
   const parsed = registerSchema.safeParse(body);
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     .limit(1);
   if (existing.length > 0) {
     return NextResponse.json(
-      { error: "Ye email already registered hai. Sign in karo." },
+      { error: "This email is already registered. Please sign in." },
       { status: 409 }
     );
   }
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     .returning();
   const user = rows[0];
   if (!user) {
-    return NextResponse.json({ error: "Account nahi bana." }, { status: 500 });
+    return NextResponse.json({ error: "Could not create the account. Please try again." }, { status: 500 });
   }
 
   try {

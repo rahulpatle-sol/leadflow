@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Valid JSON bhejo." }, { status: 400 });
+    return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
 
   const parsed = loginSchema.safeParse(body);
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   const user = rows[0];
 
   const invalid = NextResponse.json(
-    { error: "Email ya password galat hai." },
+    { error: "Incorrect email or password." },
     { status: 401 }
   );
   if (!user) return invalid;

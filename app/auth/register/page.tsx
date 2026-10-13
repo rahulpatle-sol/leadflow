@@ -19,15 +19,15 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     if (name.trim().length < 2) {
-      setError("Apna naam likho.");
+      setError("Please enter your name.");
       return;
     }
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
-      setError("Sahi email likho.");
+      setError("Please enter a valid email address.");
       return;
     }
     if (password.length < 6) {
-      setError("Password kam se kam 6 characters ka ho.");
+      setError("Password must be at least 6 characters.");
       return;
     }
     setLoading(true);
@@ -43,13 +43,13 @@ export default function RegisterPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data?.error ?? "Register failed. Phir try karo.");
+        setError(data?.error ?? "Registration failed. Please try again.");
         return;
       }
       router.push("/dashboard");
       router.refresh();
     } catch {
-      setError("Network error. Phir try karo.");
+      setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -125,7 +125,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-bg transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="mt-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_-12px_rgba(11,95,255,0.7)] transition-all hover:brightness-110 disabled:opacity-60"
             >
               {loading ? "Creating…" : "Create account"}
             </button>

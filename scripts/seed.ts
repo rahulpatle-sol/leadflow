@@ -41,7 +41,7 @@ async function main() {
       passwordHash: await hashPassword(PASSWORD),
     })
     .returning();
-  if (!user) throw new Error("Demo user nahi bana.");
+  if (!user) throw new Error("Could not create the demo user.");
   console.log(`Demo user: ${EMAIL}`);
 
   const seed: {
@@ -143,7 +143,7 @@ async function main() {
         nextFollowUpAt: l.nextFollowUpAt,
       })
       .returning();
-    if (!row) throw new Error(`Lead nahi bana: ${l.name}`);
+    if (!row) throw new Error(`Could not create lead: ${l.name}`);
     for (const n of l.notes) {
       await db.insert(discussions).values({
         leadId: row.id,
