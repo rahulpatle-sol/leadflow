@@ -1,0 +1,15 @@
+.git
+.github
+.next
+node_modules
+docs
+coverage
+*.log
+.env
+.env.local
+.env.*.local
+*.md
+.vscode
+.idea
+.DS_Store
+tsconfig.tsbuildinfo

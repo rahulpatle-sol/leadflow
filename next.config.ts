@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Minimal standalone server for the Alpine Docker image.
+  output: "standalone",
   experimental: {
     agentFeedback: true,
   },

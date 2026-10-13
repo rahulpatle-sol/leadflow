@@ -1,0 +1,24 @@
+# Render Blueprint — deploys LeadFlow from the Alpine Dockerfile.
+# Push this repo to GitHub, then: Render Dashboard → New → Blueprint → select repo.
+# Set DATABASE_URL (Neon) and AUTH_SECRET in the Render dashboard afterwards.
+services:
+  - type: web
+    name: leadflow
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /
+    # Runs before every deploy; applies pending SQL migrations.
+    preDeployCommand: "node scripts/migrate.mjs"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: SEED_EMAIL
+        value: demo@leadflow.app
+      - key: SEED_PASSWORD
+        sync: false
