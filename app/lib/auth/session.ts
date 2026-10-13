@@ -10,6 +10,7 @@ const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 export type PublicUser = Omit<User, "passwordHash">;
 
 export function toPublicUser(user: User): PublicUser {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordHash: _ignored, ...safe } = user;
   return safe;
 }

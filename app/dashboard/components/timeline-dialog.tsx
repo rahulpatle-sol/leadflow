@@ -32,13 +32,16 @@ export function TimelineDialog({
     enabled: leadId !== null,
   });
 
-  // Reset form when a different lead opens; Escape closes; lock scroll
-  useEffect(() => {
+  // Reset the form when a different lead opens (derived state during render).
+  const [openedLeadId, setOpenedLeadId] = useState(leadId);
+  if (leadId !== openedLeadId) {
+    setOpenedLeadId(leadId);
     setNote("");
     setWantFollowUp(false);
     setDate("");
     setTime("");
-  }, [leadId]);
+  }
+  // Escape closes; lock scroll while open.
   useEffect(() => {
     if (leadId === null) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -64,28 +67,28 @@ export function TimelineDialog({
   async function handleStatusChange(status: string) {
     try {
       await patchLead(leadId!, { status: status as (typeof LEAD_STATUSES)[number] });
-      toast.success("Status update ho gaya.");
+      toast.success("Status updated.");
       await refreshAll();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Status update nahi hua.");
+      toast.error(err instanceof Error ? err.message : "Could not update the status.");
     }
   }
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (note.trim().length === 0) {
-      toast.error("Discussion note likho.");
+      toast.error("Please enter a discussion note.");
       return;
     }
     let followUpAt: string | null = null;
     if (wantFollowUp) {
       if (!date || !time) {
-        toast.error("Follow-up ke liye date aur time dono chahiye.");
+        toast.error("Please select both a date and a time for the follow-up.");
         return;
       }
       const d = new Date(`${date}T${time}`);
       if (Number.isNaN(d.getTime())) {
-        toast.error("Follow-up date-time sahi nahi hai.");
+        toast.error("The follow-up date and time are invalid.");
         return;
       }
       followUpAt = d.toISOString();
@@ -93,14 +96,14 @@ export function TimelineDialog({
     setSaving(true);
     try {
       await addDiscussion(leadId!, { note: note.trim(), followUpAt });
-      toast.success("Note save ho gaya.");
+      toast.success("Note saved.");
       setNote("");
       setWantFollowUp(false);
       setDate("");
       setTime("");
       await refreshAll();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Note save nahi hua.");
+      toast.error(err instanceof Error ? err.message : "Could not save the note.");
     } finally {
       setSaving(false);
     }
@@ -178,11 +181,11 @@ export function TimelineDialog({
             </div>
           ) : isError || !data ? (
             <p className="text-sm text-danger">
-              Timeline load nahi hui. Dialog band karke dobara kholo.
+              Could not load the timeline. Please close and reopen this dialog.
             </p>
           ) : data.discussions.length === 0 ? (
             <p className="text-sm text-muted">
-              Abhi koi discussion nahi hai. Neeche pehla note likho.
+              No discussions yet. Add the first note below.
             </p>
           ) : (
             <ol className="relative flex flex-col gap-5 border-l-2 border-ink/10 pl-5">

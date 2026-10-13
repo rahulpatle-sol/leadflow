@@ -55,9 +55,14 @@ export function LeadsTable({
   const status = searchParams.get("status") ?? "";
   const q = searchParams.get("q") ?? "";
 
-  // Debounced search: type freely, URL updates after 400ms idle
+  // Debounced search: type freely, URL updates after 400ms idle.
+  // Sync the draft when the URL query changes externally (back/forward nav).
   const [draft, setDraft] = useState(q);
-  useEffect(() => setDraft(q), [q]);
+  const [syncedQ, setSyncedQ] = useState(q);
+  if (q !== syncedQ) {
+    setSyncedQ(q);
+    setDraft(q);
+  }
   useEffect(() => {
     if (draft === q) return;
     const t = setTimeout(() => {
@@ -147,7 +152,7 @@ export function LeadsTable({
         </div>
       ) : isError ? (
         <div className="p-6 text-center">
-          <p className="text-sm text-danger">Leads load nahi hue.</p>
+          <p className="text-sm text-danger">Could not load leads.</p>
           <button
             type="button"
             onClick={() => refetch()}
@@ -158,7 +163,7 @@ export function LeadsTable({
         </div>
       ) : data.items.length === 0 ? (
         <p className="p-8 text-center text-sm text-muted">
-          Koi lead nahi mila. Filter hatao ya New lead add karo.
+          No leads found. Try clearing the filters or add a new lead.
         </p>
       ) : (
         <div
