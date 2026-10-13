@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Geist } from "next/font/google";
+import { Inter, Instrument_Serif } from "next/font/google";
 import { ThemeProvider } from "./components/theme-provider";
 import "./globals.css";
 
-const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const serif = Instrument_Serif({
+  variable: "--font-serif-accent",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
-  title: "LeadFlow",
-  description: "Track every lead, every conversation and every follow-up.",
+  title: "LeadFlow — Follow up on time, every time",
+  description: "Track every lead, every conversation and every follow-up in one calm place.",
 };
 
 export default function RootLayout({
@@ -23,7 +29,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geist.variable} ${bricolage.variable}`}
+      className={`${inter.variable} ${serif.variable}`}
     >
       <body className="font-sans antialiased">
         <ThemeProvider>{children}</ThemeProvider>

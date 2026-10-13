@@ -24,17 +24,17 @@ export function Scene() {
       >
         <defs>
           <linearGradient id="daySky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#8ec5f2" />
-            <stop offset="1" stopColor="#eaf4fb" />
+            <stop offset="0" stopColor="#bcd2ff" />
+            <stop offset="1" stopColor="#eef4ff" />
           </linearGradient>
           <linearGradient id="dayHill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#6db35a" />
-            <stop offset="1" stopColor="#3d7d37" />
+            <stop offset="0" stopColor="#5b90ff" />
+            <stop offset="1" stopColor="#0b5fff" />
           </linearGradient>
         </defs>
         <rect width="1440" height="800" fill="url(#daySky)" />
-        <circle cx="1130" cy="170" r="72" fill="#fff6d6" opacity="0.7" />
-        <circle cx="1130" cy="170" r="38" fill="#fff3b8" />
+        <circle cx="1130" cy="170" r="72" fill="#ffffff" opacity="0.7" />
+        <circle cx="1130" cy="170" r="38" fill="#dbe7ff" />
 
         <g className="cloud" fill="#ffffff" opacity="0.85">
           <ellipse cx="260" cy="200" rx="90" ry="26" />
@@ -53,18 +53,18 @@ export function Scene() {
 
         <path
           d="M0 600 C 300 540, 600 560, 900 580 S 1300 560, 1440 590 V800 H0Z"
-          fill="#b9d59a"
+          fill="#c7dbff"
         />
         <path
           d="M0 640 C 260 560, 560 540, 800 560 S 1220 580, 1440 600 V800 H0Z"
           fill="url(#dayHill)"
         />
 
-        <rect x="796" y="505" width="9" height="58" fill="#6b4f3a" />
-        <circle cx="800" cy="480" r="40" fill="#2f6b2f" />
-        <circle cx="770" cy="498" r="28" fill="#2f6b2f" />
-        <circle cx="832" cy="498" r="30" fill="#2f6b2f" />
-        <circle cx="790" cy="468" r="22" fill="#4c8f43" />
+        <rect x="796" y="505" width="9" height="58" fill="#0a1c3f" />
+        <circle cx="800" cy="480" r="40" fill="#0a1c3f" />
+        <circle cx="770" cy="498" r="28" fill="#0b5fff" />
+        <circle cx="832" cy="498" r="30" fill="#0b5fff" />
+        <circle cx="790" cy="468" r="22" fill="#5b90ff" />
       </svg>
 
       {/* Night */}
