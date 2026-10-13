@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { format, formatDistanceToNow, isBefore, startOfDay } from "date-fns";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-import { LEAD_STATUSES } from "@/app/lib/db/schema";
+import { LEAD_STATUSES } from "@/app/lib/leads/types";
 import { PAGE_SIZES, STATUS_LABELS } from "@/app/lib/leads/types";
 import { fetchLeads } from "./api";
 import { StatusPill } from "./status-pill";

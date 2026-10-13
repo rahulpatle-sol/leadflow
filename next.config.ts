@@ -6,6 +6,13 @@ const nextConfig: NextConfig = {
   output: "standalone",
   experimental: {
     agentFeedback: true,
+    // Trim barrel imports so icon/date/toast libs don't bloat client chunks.
+    optimizePackageImports: [
+      "lucide-react",
+      "date-fns",
+      "sonner",
+      "@tanstack/react-query",
+    ],
   },
   cacheComponents: true,
   partialPrefetching: true,

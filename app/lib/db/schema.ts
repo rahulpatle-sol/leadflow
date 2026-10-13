@@ -7,16 +7,10 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 
-export const LEAD_STATUSES = [
-  "new",
-  "contacted",
-  "qualified",
-  "proposal_sent",
-  "won",
-  "lost",
-] as const;
+import { LEAD_STATUSES } from "../leads/types";
 
-export type LeadStatus = (typeof LEAD_STATUSES)[number];
+export { LEAD_STATUSES };
+export type { LeadStatus } from "../leads/types";
 
 export const leadStatusEnum = pgEnum("lead_status", LEAD_STATUSES);
 

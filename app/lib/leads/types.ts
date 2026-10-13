@@ -1,6 +1,14 @@
-import type { LeadStatus } from "../db/schema";
+// Client-safe: no drizzle imports here — this module ships to the browser.
+export const LEAD_STATUSES = [
+  "new",
+  "contacted",
+  "qualified",
+  "proposal_sent",
+  "won",
+  "lost",
+] as const;
 
-export type { LeadStatus } from "../db/schema";
+export type LeadStatus = (typeof LEAD_STATUSES)[number];
 
 export interface LeadItem {
   id: string;

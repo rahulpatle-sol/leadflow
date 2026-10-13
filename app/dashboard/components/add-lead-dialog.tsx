@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
-import { LEAD_STATUSES } from "@/app/lib/db/schema";
+import { LEAD_STATUSES } from "@/app/lib/leads/types";
 import { STATUS_LABELS } from "@/app/lib/leads/types";
 import { createLead } from "./api";
 
