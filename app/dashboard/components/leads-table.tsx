@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { format, isBefore, startOfDay } from "date-fns";
+import { format, formatDistanceToNow, isBefore, startOfDay } from "date-fns";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { LEAD_STATUSES } from "@/app/lib/db/schema";
 import { PAGE_SIZES, STATUS_LABELS } from "@/app/lib/leads/types";
@@ -38,7 +38,11 @@ function pageWindow(page: number, totalPages: number): number[] {
 const inputCls =
   "rounded-xl border border-ink/15 bg-bg px-4 py-2.5 text-sm text-ink outline-none placeholder:text-muted/70 focus:border-accent";
 
-export function LeadsTable() {
+export function LeadsTable({
+  onSelectLead,
+}: {
+  onSelectLead: (id: string) => void;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -160,12 +164,13 @@ export function LeadsTable() {
         <div
           className={`overflow-x-auto transition-opacity ${isPlaceholderData ? "opacity-60" : ""}`}
         >
-          <table className="w-full min-w-[720px] text-left text-sm">
+          <table className="w-full min-w-[860px] text-left text-sm">
             <thead>
               <tr className="border-b border-ink/10 text-xs uppercase tracking-wide text-muted">
                 <th scope="col" className="px-4 py-3 font-medium">Lead</th>
                 <th scope="col" className="px-4 py-3 font-medium">Phone</th>
                 <th scope="col" className="px-4 py-3 font-medium">Status</th>
+                <th scope="col" className="px-4 py-3 font-medium">Last discussion</th>
                 <th scope="col" className="px-4 py-3 font-medium">Next follow-up</th>
                 <th scope="col" className="px-4 py-3 font-medium">Added</th>
               </tr>
@@ -183,7 +188,13 @@ export function LeadsTable() {
                 return (
                   <tr
                     key={lead.id}
-                    className="border-b border-ink/5 last:border-0 hover:bg-ink/[0.02]"
+                    onClick={() => onSelectLead(lead.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") onSelectLead(lead.id);
+                    }}
+                    tabIndex={0}
+                    title="Open timeline"
+                    className="cursor-pointer border-b border-ink/5 last:border-0 hover:bg-ink/[0.02] focus:bg-ink/[0.02] focus:outline-none"
                   >
                     <td className="px-4 py-3">
                       <p className="font-medium text-ink">{lead.name}</p>
@@ -194,6 +205,25 @@ export function LeadsTable() {
                     <td className="px-4 py-3 text-muted">{lead.phone ?? "—"}</td>
                     <td className="px-4 py-3">
                       <StatusPill status={lead.status} />
+                    </td>
+                    <td className="px-4 py-3">
+                      {lead.lastNote ? (
+                        <>
+                          <p className="line-clamp-2 max-w-64 text-ink">
+                            {lead.lastNote}
+                          </p>
+                          {lead.lastDiscussionAt ? (
+                            <p className="mt-0.5 text-xs text-muted">
+                              {formatDistanceToNow(
+                                new Date(lead.lastDiscussionAt),
+                                { addSuffix: true }
+                              )}
+                            </p>
+                          ) : null}
+                        </>
+                      ) : (
+                        <span className="text-muted">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {fu ? (

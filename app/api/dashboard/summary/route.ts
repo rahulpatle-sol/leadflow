@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { and, asc, count, desc, eq, gte, lt, lte, ne } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, lt, lte, ne } from "drizzle-orm";
 import { endOfDay, format, startOfDay, startOfMonth, subMonths } from "date-fns";
 import { getDb } from "../../../lib/db";
 import { discussions, leads } from "../../../lib/db/schema";
@@ -131,8 +131,33 @@ export async function GET() {
     if (bucket) bucket.count += 1;
   }
 
-  const toLead = (r: (typeof dueTodayLeads)[number]): LeadItem =>
-    serializeLead(r);
+  // Latest note for the pinned/overdue cards (wireframe: "Last Note")
+  const latestByLead = new Map<string, { note: string; createdAt: Date }>();
+  const pinIds = [...dueTodayLeads, ...overdueLeads].map((l) => l.id);
+  if (pinIds.length > 0) {
+    const notes = await db
+      .select({
+        leadId: discussions.leadId,
+        note: discussions.note,
+        createdAt: discussions.createdAt,
+      })
+      .from(discussions)
+      .where(inArray(discussions.leadId, pinIds))
+      .orderBy(desc(discussions.createdAt));
+    for (const n of notes) {
+      if (!latestByLead.has(n.leadId)) {
+        latestByLead.set(n.leadId, { note: n.note, createdAt: n.createdAt });
+      }
+    }
+  }
+
+  const toLead = (r: (typeof dueTodayLeads)[number]): LeadItem => {
+    const latest = latestByLead.get(r.id);
+    return serializeLead(r, {
+      lastNote: latest?.note ?? null,
+      lastDiscussionAt: latest?.createdAt ?? null,
+    });
+  };
 
   const body: DashboardSummary = {
     stats: {

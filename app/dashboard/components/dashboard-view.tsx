@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { LeadView } from "@/app/lib/leads/types";
 import { LEAD_VIEWS } from "@/app/lib/leads/types";
@@ -10,6 +11,8 @@ import { Followups } from "./followups";
 import { MonthlyChart } from "./monthly-chart";
 import { ActivityFeed } from "./activity-feed";
 import { AddLeadDialog } from "./add-lead-dialog";
+import { PinnedFollowups } from "./pinned-followups";
+import { TimelineDialog } from "./timeline-dialog";
 
 function isView(v: string | null): v is LeadView {
   return (LEAD_VIEWS as readonly string[]).includes(v ?? "");
@@ -19,6 +22,7 @@ export function DashboardView() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [openLeadId, setOpenLeadId] = useState<string | null>(null);
   const view: LeadView = isView(searchParams.get("view"))
     ? (searchParams.get("view") as LeadView)
     : "leads";
@@ -46,11 +50,12 @@ export function DashboardView() {
               </h2>
               <AddLeadDialog />
             </div>
-            <LeadsTable />
+            <PinnedFollowups onSelectLead={setOpenLeadId} />
+            <LeadsTable onSelectLead={setOpenLeadId} />
           </>
         ) : null}
 
-        {view === "followups" ? <Followups /> : null}
+        {view === "followups" ? <Followups onSelectLead={setOpenLeadId} /> : null}
 
         {view === "analytics" ? (
           <>
@@ -59,6 +64,8 @@ export function DashboardView() {
           </>
         ) : null}
       </div>
+
+      <TimelineDialog leadId={openLeadId} onClose={() => setOpenLeadId(null)} />
     </div>
   );
 }

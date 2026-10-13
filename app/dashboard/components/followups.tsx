@@ -7,9 +7,20 @@ import type { LeadItem } from "@/app/lib/leads/types";
 import { fetchSummary } from "./api";
 import { StatusPill } from "./status-pill";
 
-function LeadRow({ lead }: { lead: LeadItem }) {
+function LeadRow({
+  lead,
+  onSelectLead,
+}: {
+  lead: LeadItem;
+  onSelectLead: (id: string) => void;
+}) {
   return (
-    <li className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-ink/5 bg-bg/60 px-3 py-2.5">
+    <li>
+      <button
+        type="button"
+        onClick={() => onSelectLead(lead.id)}
+        className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-ink/5 bg-bg/60 px-3 py-2.5 text-left transition-colors hover:bg-ink/5"
+      >
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-ink">{lead.name}</p>
         {lead.company ? (
@@ -22,11 +33,16 @@ function LeadRow({ lead }: { lead: LeadItem }) {
           {format(new Date(lead.nextFollowUpAt), "d MMM, h:mm a")}
         </span>
       ) : null}
+      </button>
     </li>
   );
 }
 
-export function Followups() {
+export function Followups({
+  onSelectLead,
+}: {
+  onSelectLead: (id: string) => void;
+}) {
   const { data, isPending, isError } = useQuery({
     queryKey: ["dashboard", "summary"],
     queryFn: fetchSummary,
@@ -71,7 +87,7 @@ export function Followups() {
         ) : (
           <ul className="mt-4 flex flex-col gap-2">
             {data.dueToday.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} />
+              <LeadRow key={lead.id} lead={lead} onSelectLead={onSelectLead} />
             ))}
           </ul>
         )}
@@ -97,7 +113,7 @@ export function Followups() {
         ) : (
           <ul className="mt-4 flex flex-col gap-2">
             {data.overdue.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} />
+              <LeadRow key={lead.id} lead={lead} onSelectLead={onSelectLead} />
             ))}
           </ul>
         )}

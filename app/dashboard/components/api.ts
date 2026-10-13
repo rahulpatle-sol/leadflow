@@ -1,8 +1,13 @@
 import type {
   DashboardSummary,
+  LeadDetail,
   PaginatedLeads,
 } from "@/app/lib/leads/types";
-import type { CreateLeadInput } from "@/app/lib/leads/schemas";
+import type {
+  CreateDiscussionInput,
+  CreateLeadInput,
+  UpdateLeadInput,
+} from "@/app/lib/leads/schemas";
 
 async function asJson(res: Response) {
   const data = await res.json().catch(() => ({}));
@@ -39,6 +44,29 @@ export async function fetchSummary(): Promise<DashboardSummary> {
 
 export async function createLead(input: CreateLeadInput) {
   const res = await fetch("/api/leads", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  return asJson(res);
+}
+
+export async function fetchLeadDetail(id: string): Promise<LeadDetail> {
+  const res = await fetch(`/api/leads/${id}`);
+  return (await asJson(res)) as LeadDetail;
+}
+
+export async function patchLead(id: string, input: UpdateLeadInput) {
+  const res = await fetch(`/api/leads/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  return asJson(res);
+}
+
+export async function addDiscussion(id: string, input: CreateDiscussionInput) {
+  const res = await fetch(`/api/leads/${id}/discussions`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
